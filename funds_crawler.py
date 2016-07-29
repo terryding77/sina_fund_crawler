@@ -46,13 +46,14 @@ def crawler_all_fund():
 
     titles = sorted(list(set([k for l in funds for k in l])))
     print(titles)
-    with open('funds.csv', 'w') as f:
+    with open('./funds.csv', 'w') as f:
         f.write(", ".join(titles))
         f.write('\n')
         for l in funds:
             print(", ".join(["%s = %s" % (k,v) for k, v in l.items()]))
             f.write(", ".join([unicode(l.get(k, "")).encode("gbk") for k in titles]))
             f.write('\n')
+    return funds
 
 
 if __name__ == '__main__':
