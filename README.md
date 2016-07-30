@@ -17,6 +17,10 @@ he is single now, and very kind to friend, if anyone want to make friend with hi
 2. use `pyinstaller -F -w gui.py` to make a **gui.exe** in *./dist* floder.
 3. gui.exe is a single-file-software, you can copy it in any folder, and double click in to run.
 
+##Gui(for all)
+I use tkinter which is a python interface for TK, so it could run on Linux and Mac with python environment
+you can use `python gui.py` to start(suitable for Windows too).
+
 
 ###Gui Usage:
 1. when you open the **gui.exe**, it will show all funds' information, you can use scrollbar to look around.
