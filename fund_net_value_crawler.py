@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from urllib2 import urlopen
+import os
 import json
 import argparse
 
@@ -12,7 +13,13 @@ def get_data(url):
     return urlopen(url).read()
 
 
-def get_net_value(fund_number, begin_date='', end_date=''):
+def get_net_value(fund_number, begin_date='', end_date='', force=False):
+    if os.path.isfile('./%s.csv' % fund_number) and not force:
+        with open('./%s.csv' % fund_number, 'r') as f:
+            data = [[t.strip() for t in l.split(',')] for l in f.readlines()]
+            titles = data[0]
+            x = sorted([dict(zip(titles, net_value)) for net_value in data[1:]], key=lambda x: x['fbrq'])
+            return x
     url_base = 'http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav'
     args = {
         'symbol': fund_number,
@@ -32,7 +39,7 @@ def get_net_value(fund_number, begin_date='', end_date=''):
         data = get_data(get_url(url_base, args)).decode('gbk')
         data = json.loads(data)['result']['data']['data']
         net_values += data
-    print("\n".join([",".join(["%s=%s" % (k, v) for k, v in net_value.items()]) for net_value in net_values]))
+    # print("\n".join([",".join(["%s=%s" % (k, v) for k, v in net_value.items()]) for net_value in net_values]))
     titles = sorted(list(set([k for l in net_values for k in l])))
     with open("./%s.csv" % fund_number, 'w') as f:
         f.write(", ".join(titles))
@@ -43,7 +50,14 @@ def get_net_value(fund_number, begin_date='', end_date=''):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', "--fund_number", required=True, type=str)
+    parser.add_argument('-n', "--fund_number", type=str)
+    parser.add_argument("all")
     args = parser.parse_args()
-    get_net_value(args.fund_number)
+    if args.all:
+        from funds_crawler import crawler_all_fund
+        funds = crawler_all_fund(force=True)
+        for fund in funds:
+            get_net_value(fund_number=fund['symbol'],force=True)
+    else:
+        get_net_value(args.fund_number, force=True)
 
