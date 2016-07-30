@@ -18,8 +18,7 @@ def get_net_value(fund_number, begin_date='', end_date='', force=False):
         with open('./%s.csv' % fund_number, 'r') as f:
             data = [[t.strip() for t in l.split(',')] for l in f.readlines()]
             titles = data[0]
-            x = sorted([dict(zip(titles, net_value)) for net_value in data[1:]], key=lambda x: x['fbrq'])
-            return x
+            return sorted([dict(zip(titles, net_value)) for net_value in data[1:]], key=lambda x: x['fbrq'])
     url_base = 'http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav'
     args = {
         'symbol': fund_number,

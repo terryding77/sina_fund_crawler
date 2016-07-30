@@ -24,7 +24,7 @@ def get_data(url):
 def crawler_all_fund(force=False):
     if os.path.isfile('./funds.csv') and not force:
         with open('./funds.csv', 'r') as f:
-            data = [[t.strip() for t in l.split(',')] for l in f.readlines()]
+            data = [[t.strip() for t in l.decode('gbk').split(',')] for l in f.readlines()]
             titles = data[0]
             return sorted([dict(zip(titles, fund)) for fund in data[1:]], key=lambda x: x['symbol'])
     url_base = 'http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO/NetValue_Service.getNetValueOpen'
@@ -56,7 +56,7 @@ def crawler_all_fund(force=False):
         f.write(", ".join(titles))
         f.write('\n')
         for l in funds:
-            print(", ".join(["%s = %s" % (k, v) for k, v in l.items()]))
+            # print(", ".join(["%s = %s" % (k, v) for k, v in l.items()]))
             f.write(", ".join([unicode(l.get(k, "")).encode("gbk") for k in titles]))
             f.write('\n')
     return funds
